@@ -1,4 +1,3 @@
-import { nanoid } from 'nanoid'
 const express = require('express');
 const cors = require('cors');
 const app = express();
@@ -19,33 +18,42 @@ app.get('/api/v1/tasks', (req, res) => {
 });
 
 app.get('/api/v1/tasks/:category', (req, res) => {
-  let categoryKeys = Object.keys(app.locals.tasks)
-  let arr = []
   let category = req.params.category
-  categoryKeys.forEach(key => {
-    app.locals.tasks[key].forEach((task) => {
-      let lowercase = task.category
-      let findWhiteSpace = lowercase.replace(/ /g, '')
-      lowercase = findWhiteSpace.toLowerCase()
-      if (lowercase === category) {
-        arr.push(task)
-      }
-    })
-  })
-  if (arr.length !== 0) {
-    res.status(200).json(arr)
+  if (req.params.category === 'mentalcare'){
+    category = 'mentalCare'
+  }
+  const foundTasks = app.locals.tasks[category.toLowerCase()]
+
+  if (foundTasks.length) {
+    res.status(200).json(foundTasks)
   } else {
     res.sendStatus(404)
   }
-})
+});
+
+const formatPostCat = (category) => {
+  const replacements = {
+    'Exercise': 'exercise',
+    'Health': 'health',
+    'Work': 'work',
+    'Mental Care': 'mentalCare',
+    'Cleaning': 'cleaning',
+    'Organization': 'organization'
+  }
+  return replacements[category]
+}
 
 app.post('/api/v1/savedtasks', (req, res) => {
-  const id = nanoid(5)
   const { category } = req.body;
+  const formattedCat = formatPostCat(category)
+  
+  if (!app.locals.savedTasks[formattedCat]) {
+    return res.status(400).json({ error: 'Invalid category specified.' });
+  }
 
-  app.locals.savedTasks[category].push({ task, id, seen, category, saved });
+  app.locals.savedTasks[formattedCat].push(req.body);
 
-  res.status(201).json({ category: [task, id, seen, category, saved ]});
+  res.status(201).json(app.locals.savedTasks);
 });
 
 app.listen(app.get('port'), () => {

@@ -5,4 +5,6 @@ const savedTasks = {
     work: [],
     mentalCare: [],
     organization: [],
-}
+};
+
+module.exports = savedTasks;
