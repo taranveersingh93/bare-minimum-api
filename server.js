@@ -23,9 +23,6 @@ app.get('/api/v1/savedtasks', (req, res) => {
 
 app.get('/api/v1/tasks/:category', (req, res) => {
   let category = req.params.category
-  if (req.params.category === 'mentalcare'){
-    category = 'mentalCare'
-  }
   const foundTasks = app.locals.tasks[category.toLowerCase()]
 
   if (foundTasks.length) {

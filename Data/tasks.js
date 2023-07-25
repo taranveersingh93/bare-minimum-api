@@ -217,7 +217,7 @@ const tasks = {
       saved: false,
     },
   ],
-  mentalCare: [
+  mentalcare: [
     {
       task: 'Find a quiet place, spend at least 60 seconds with eyes closed and breathe deeply.',
       id: 431,
