@@ -17,6 +17,10 @@ app.get('/api/v1/tasks', (req, res) => {
   res.status(200).json({ tasks: app.locals.tasks });
 });
 
+app.get('/api/v1/savedtasks', (req, res) => {
+  res.status(200).json({ savedtasks: app.locals.savedTasks });
+});
+
 app.get('/api/v1/tasks/:category', (req, res) => {
   let category = req.params.category
   if (req.params.category === 'mentalcare'){
@@ -31,29 +35,17 @@ app.get('/api/v1/tasks/:category', (req, res) => {
   }
 });
 
-const formatPostCat = (category) => {
-  const replacements = {
-    'Exercise': 'exercise',
-    'Health': 'health',
-    'Work': 'work',
-    'Mental Care': 'mentalCare',
-    'Cleaning': 'cleaning',
-    'Organization': 'organization'
-  }
-  return replacements[category]
-}
-
 app.post('/api/v1/savedtasks', (req, res) => {
-  const { category } = req.body;
-  const formattedCat = formatPostCat(category)
-  
-  if (!app.locals.savedTasks[formattedCat]) {
-    return res.status(400).json({ error: 'Invalid category specified.' });
-  }
-
-  app.locals.savedTasks[formattedCat].push(req.body);
+  app.locals.savedTasks.push(req.body);
 
   res.status(201).json(app.locals.savedTasks);
+});
+
+app.delete('/api/v1/savedtasks', (req, res) => {
+  const { id } = req.body;
+  const filteredList = app.locals.savedTasks.filter(task => task.id !== id)
+  
+  res.status(201).json(filteredList)
 });
 
 app.listen(app.get('port'), () => {
