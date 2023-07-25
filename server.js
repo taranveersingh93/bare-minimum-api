@@ -28,10 +28,14 @@ app.get('/api/v1/tasks/:category', (req, res) => {
         arr.push(task)
       }
     })
-    return arr
   })
-  res.status(200).json(arr)
+  if (arr.length !== 0) {
+    res.status(200).json(arr)
+  } else {
+    res.sendStatus(404)
+  }
 })
+
 
 app.listen(app.get('port'), () => {
   console.log(`${app.locals.title} is running on http://localhost:${app.get('port')}.`);
