@@ -18,7 +18,7 @@ app.get('/api/v1/tasks', (req, res) => {
 });
 
 app.get('/api/v1/savedtasks', (req, res) => {
-  res.status(200).json({ savedtasks: app.locals.savedTasks });
+  res.status(200).json(app.locals.savedTasks);
 });
 
 app.get('/api/v1/tasks/:category', (req, res) => {
