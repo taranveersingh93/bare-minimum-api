@@ -17,9 +17,17 @@ app.get('/api/v1/tasks', (req, res) => {
 
 app.get('/api/v1/tasks/:category', (req, res) => {
   let categoryKeys = Object.keys(app.locals.tasks)
-  const { category } = req.params;
-  const specificCategory = categoryKeys.find(task => task.category === category)
-  res.status(200).json(findCategory)
+  let arr = []
+  let category = req.params.category[0].toUpperCase() + req.params.category.substring(1);
+  categoryKeys.forEach(key => {
+    app.locals.tasks[key].forEach((task) => {
+      if (task.category === category) {
+        arr.push(task)
+      }
+    })
+    return arr
+  })
+  res.status(200).json(arr)
 })
 
 app.listen(app.get('port'), () => {
