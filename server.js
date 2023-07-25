@@ -18,10 +18,13 @@ app.get('/api/v1/tasks', (req, res) => {
 app.get('/api/v1/tasks/:category', (req, res) => {
   let categoryKeys = Object.keys(app.locals.tasks)
   let arr = []
-  let category = req.params.category[0].toUpperCase() + req.params.category.substring(1);
+  let category = req.params.category
   categoryKeys.forEach(key => {
     app.locals.tasks[key].forEach((task) => {
-      if (task.category === category) {
+      let lowercase = task.category
+      let findWhiteSpace = lowercase.replace(/ /g, '')
+      lowercase = findWhiteSpace.toLowerCase()
+      if (lowercase === category) {
         arr.push(task)
       }
     })
