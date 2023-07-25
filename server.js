@@ -1,3 +1,4 @@
+import { nanoid } from 'nanoid'
 const express = require('express');
 const cors = require('cors');
 const app = express();
@@ -35,6 +36,16 @@ app.get('/api/v1/tasks/:category', (req, res) => {
     res.sendStatus(404)
   }
 })
+
+app.post('/api/v1/savedtasks', (request, response) => {
+  const id = nanoid(5)
+  const { name, type } = request.body;
+
+  app.locals.pets.push({ id, name, type });
+
+  response.status(201).json({ id, name, type });
+});
+// model.id = nanoid(5)
 
 
 app.listen(app.get('port'), () => {
