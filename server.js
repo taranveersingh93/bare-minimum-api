@@ -2,10 +2,12 @@ import { nanoid } from 'nanoid'
 const express = require('express');
 const cors = require('cors');
 const app = express();
-const taskData = require('./Data/tasks')
+const taskData = require('./Data/tasks');
+const savedTasks = require('./Data/savedtasks')
 
 app.locals.title = "Bare Minimum API"
 app.locals.tasks = taskData
+app.locals.savedTasks = savedTasks
 
 app.set('port', process.env.PORT || 3001);
 
@@ -37,16 +39,14 @@ app.get('/api/v1/tasks/:category', (req, res) => {
   }
 })
 
-app.post('/api/v1/savedtasks', (request, response) => {
+app.post('/api/v1/savedtasks', (req, res) => {
   const id = nanoid(5)
-  const { name, type } = request.body;
+  const { category } = req.body;
 
-  app.locals.pets.push({ id, name, type });
+  app.locals.savedTasks[category].push({ task, id, seen, category, saved });
 
-  response.status(201).json({ id, name, type });
+  res.status(201).json({ category: [task, id, seen, category, saved ]});
 });
-// model.id = nanoid(5)
-
 
 app.listen(app.get('port'), () => {
   console.log(`${app.locals.title} is running on http://localhost:${app.get('port')}.`);
