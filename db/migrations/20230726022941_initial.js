@@ -7,9 +7,9 @@ exports.up = function(knex) {
     table.increments('id').primary();
     table.string('category');
     table.string('task');
-    table.string('seen');
-    table.string('saved');
-    table.string('completed');
+    table.boolean('seen');
+    table.boolean('saved');
+    table.boolean('completed');
     table.timestamps();
   })
 };
