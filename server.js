@@ -38,10 +38,24 @@ app.post('/api/v1/savedtasks', (req, res) => {
   res.status(201).json(app.locals.savedTasks);
 });
 
-app.delete('/api/v1/savedtasks', (req, res) => {
-  const { id } = req.body;
-  app.locals.savedTasks = app.locals.savedTasks.filter(task => task.id !== id)
-  
+app.patch('/api/v1/savedtasks/:id', (req, res) => {
+  const { id } = req.params;
+  const { completed } = req.body;
+
+  const taskIndex = app.locals.savedTasks.findIndex(task => task.id === parseInt(id));
+
+  if (taskIndex === -1) {
+    return res.status(404).json({ error: 'Task not found.' });
+  }
+
+  app.locals.savedTasks[taskIndex].completed = completed;
+
+  res.status(200).json({ message: 'Task updated successfully.' });
+});
+
+app.delete('/api/v1/savedtasks/:id', (req, res) => {
+  const { id } = req.params;
+  app.locals.savedTasks = app.locals.savedTasks.filter(task => task.id !== parseInt(id))
   res.status(201).json(app.locals.savedTasks)
 });
 
