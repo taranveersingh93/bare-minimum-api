@@ -12,7 +12,11 @@ module.exports = {
       user: "postgres",
       password: "stretchtech",
       database: "bare-minimum"
-    }
+    },
+    migrations: {
+      directory: './db/migrations'
+    },
+    useNullAsDefault: true
   },
 
   production: {
