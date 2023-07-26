@@ -30,17 +30,19 @@ app.get('/api/v1/savedtasks', async (req, res) => {
   } catch (error) {
     res.status(500).json({message: error})
   }
-  // res.status(200).json(app.locals.savedTasks);
 });
 
-app.get('/api/v1/tasks/:category', (req, res) => {
-  let category = req.params.category
-  const foundTasks = app.locals.tasks[category.toLowerCase()]
-
-  if (foundTasks.length) {
-    res.status(200).json(foundTasks)
-  } else {
-    res.sendStatus(404)
+app.get('/api/v1/tasks/:category', async (req, res) => {
+  try {
+    const category = req.params.category
+    const foundTasks = await knex.from("allTasks").select().where({category: category})
+    if (foundTasks.length) {
+      res.status(200).json(foundTasks);
+    } else {
+      res.sendStatus(404);
+    }
+  } catch (error) {
+    res.status(500).json({message: error});
   }
 });
 
