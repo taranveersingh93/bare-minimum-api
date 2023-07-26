@@ -53,7 +53,7 @@ app.post('/api/v1/savedTasks', async (req, res) => {
     const matchedTask = await knex("allTasks").select("saved").where({id:requestID});
     const alreadySaved = matchedTask[0].saved;
     if (alreadySaved) {
-      res.status(201).json({message: 'This task is already saved.'});
+      res.status(404).json({message: 'This task is already saved.'});
     } else {
       await knex("allTasks").where({id: requestID}).update({saved: true});
       res.status(201).json({task: req.body.task})
@@ -63,11 +63,22 @@ app.post('/api/v1/savedTasks', async (req, res) => {
   }
 });
 
-app.delete('/api/v1/savedtasks', (req, res) => {
-  const { id } = req.body;
-  app.locals.savedTasks = app.locals.savedTasks.filter(task => task.id !== id)
+app.delete('/api/v1/savedtasks', async (req, res) => {
+  try {
+    const requestID = req.body.id;
+    const matchedTask = await knex("allTasks").select("saved").where({id:requestID});
+    const alreadySaved = matchedTask[0].saved;
+    if (alreadySaved) {
+      await knex("allTasks").where({id: requestID}).update({saved: false});
+      res.status(201).json({task:req.body.task})
+    } else {
+      res.status(404).json({message: 'This task is not saved to begin with'})
+    }
+  } catch (error) {
+    res.status(500).json({message: 'Oh no, something went wrong'})
+  }
+
   
-  res.status(201).json(app.locals.savedTasks)
 });
 
 app.listen(app.get('port'), () => {
