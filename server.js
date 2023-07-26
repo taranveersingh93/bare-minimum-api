@@ -40,9 +40,9 @@ app.post('/api/v1/savedtasks', (req, res) => {
 
 app.delete('/api/v1/savedtasks', (req, res) => {
   const { id } = req.body;
-  const filteredList = app.locals.savedTasks.filter(task => task.id !== id)
+  app.locals.savedTasks = app.locals.savedTasks.filter(task => task.id !== id)
   
-  res.status(201).json(filteredList)
+  res.status(201).json(app.locals.savedTasks)
 });
 
 app.listen(app.get('port'), () => {
