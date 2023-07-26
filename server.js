@@ -16,16 +16,21 @@ app.use(express.json());
 
 app.get('/api/v1/tasks', async (req, res) => {
   try {
-    const tasks = await knex.select().from("allTasks");
+    const tasks = await knex.from("allTasks").select();
     res.status(200).json(tasks);
   } catch (error) {
-    res.status(500).json({error})
+    res.status(500).json({message: error})
   }
-  // res.status(200).json({ tasks: app.locals.tasks });
 });
 
-app.get('/api/v1/savedtasks', (req, res) => {
-  res.status(200).json(app.locals.savedTasks);
+app.get('/api/v1/savedtasks', async (req, res) => {
+  try {
+    const savedTasks = await knex.from("allTasks").select().where({ saved: true});
+    res.status(200).json(savedTasks);
+  } catch (error) {
+    res.status(500).json({message: error})
+  }
+  // res.status(200).json(app.locals.savedTasks);
 });
 
 app.get('/api/v1/tasks/:category', (req, res) => {

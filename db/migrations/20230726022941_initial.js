@@ -10,7 +10,7 @@ exports.up = function(knex) {
     table.boolean('seen');
     table.boolean('saved');
     table.boolean('completed');
-    table.timestamps();
+    table.timestamps(true, true);
   })
 };
 
