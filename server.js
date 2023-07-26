@@ -25,6 +25,7 @@ app.get('/api/v1/tasks', async (req, res) => {
 
 app.get('/api/v1/savedtasks', async (req, res) => {
   try {
+    console.log('get')
     const savedTasks = await knex.from("allTasks").select().where({ saved: true});
     res.status(200).json(savedTasks);
   } catch (error) {
@@ -56,9 +57,11 @@ app.post('/api/v1/savedTasks', async (req, res) => {
       res.status(404).json({message: 'This task is already saved.'});
     } else {
       await knex("allTasks").where({id: requestID}).update({saved: true});
-      res.status(201).json({task: req.body.task})
+      const savedTasks = await knex("allTasks").select().where({saved: true})
+      res.status(201).json(savedTasks)
     }
   } catch (error) {
+    console.log(error)
     res.status(500).json({message:error})
   }
 });
