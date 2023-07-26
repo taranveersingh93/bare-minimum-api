@@ -3,7 +3,7 @@ const cors = require('cors');
 const knex = require('./knex');
 const app = express();
 const taskData = require('./Data/tasks');
-const savedTasks = require('./Data/savedtasks')
+const savedTasks = require('./Data/savedtasks');
 
 app.locals.title = "Bare Minimum API"
 app.locals.tasks = taskData
@@ -14,8 +14,14 @@ app.set('port', process.env.PORT || 3001);
 app.use(cors());
 app.use(express.json());
 
-app.get('/api/v1/tasks', (req, res) => {
-  res.status(200).json({ tasks: app.locals.tasks });
+app.get('/api/v1/tasks', async (req, res) => {
+  try {
+    const tasks = await knex.select().from("allTasks");
+    res.status(200).json(tasks);
+  } catch (error) {
+    res.status(500).json({error})
+  }
+  // res.status(200).json({ tasks: app.locals.tasks });
 });
 
 app.get('/api/v1/savedtasks', (req, res) => {
