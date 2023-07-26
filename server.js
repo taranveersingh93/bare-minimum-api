@@ -35,8 +35,9 @@ app.get('/api/v1/savedtasks', async (req, res) => {
 app.get('/api/v1/tasks/:category', async (req, res) => {
   try {
     const category = req.params.category
-    const foundTasks = await knex.from("allTasks").select().where({category: category})
-    if (foundTasks.length) {
+    const foundCategory = await knex.from("allTasks").select("category").where({category: category})
+    if (foundCategory.length) {
+      const foundTasks = await knex.from("allTasks").select().where({category: category})
       res.status(200).json(foundTasks);
     } else {
       res.sendStatus(404);
@@ -46,10 +47,20 @@ app.get('/api/v1/tasks/:category', async (req, res) => {
   }
 });
 
-app.post('/api/v1/savedtasks', (req, res) => {
-  app.locals.savedTasks.push(req.body);
-
-  res.status(201).json(app.locals.savedTasks);
+app.post('/api/v1/savedTasks', async (req, res) => {
+  try {
+    const requestID = req.body.id;
+    const matchedTask = await knex("allTasks").select("saved").where({id:requestID});
+    const alreadySaved = matchedTask[0].saved;
+    if (alreadySaved) {
+      res.status(201).json({message: 'This task is already saved.'});
+    } else {
+      await knex("allTasks").where({id: requestID}).update({saved: true});
+      res.status(201).json({task: req.body.task})
+    }
+  } catch (error) {
+    res.status(500).json({message:error})
+  }
 });
 
 app.delete('/api/v1/savedtasks', (req, res) => {
