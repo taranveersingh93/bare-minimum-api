@@ -65,6 +65,22 @@ app.post('/api/v1/savedTasks', async (req, res) => {
   }
 });
 
+app.patch('/api/v1/savedtasks/:id', async (req, res) => {
+  const requestID = req.params.id;
+  const completedStatus = req.body.completed;
+  console.log(completedStatus)
+  const matchedTask = await knex("allTasks").select("saved").where({id:requestID});
+
+  if (!matchedTask) {
+    return res.status(404).json({ error: 'Task not found.' });
+  }
+
+  await knex("allTasks").where({id: requestID}).update({completed: completedStatus});
+  const savedTasks = await knex("allTasks").select().where({saved: true})
+  console.log(savedTasks);
+  res.status(201).json(savedTasks)
+  });
+
 app.delete('/api/v1/savedtasks/:id', async (req, res) => {
   try {
     const requestID = req.params.id;
@@ -72,8 +88,9 @@ app.delete('/api/v1/savedtasks/:id', async (req, res) => {
     const alreadySaved = matchedTask[0].saved;
     if (alreadySaved) {
       await knex("allTasks").where({id: requestID}).update({saved: false});
+      await knex("allTasks").where({id: requestID}).update({completed: false});
       const savedTasks = await knex("allTasks").select().where({saved: true});
-      res.status(201).json(savedTasks)
+      res.status(201).json(savedTasks);
     } else {
       res.status(404).json({message: 'This task is not saved to begin with'})
     }
@@ -81,8 +98,6 @@ app.delete('/api/v1/savedtasks/:id', async (req, res) => {
     console.log(error)
     res.status(500).json({message: 'Oh no, something went wrong'})
   }
-
-  
 });
 
 app.listen(app.get('port'), () => {
