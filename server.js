@@ -80,7 +80,6 @@ app.patch('/api/v1/savedtasks/:id', async (req, res) => {
 
   await knex("allTasks").where({id: requestID}).update({completed: completedStatus});
   const savedTasks = await knex("allTasks").select().where({saved: true})
-  console.log(savedTasks);
   res.status(201).json(savedTasks)
   });
 
