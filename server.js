@@ -2,12 +2,9 @@ const express = require('express');
 const cors = require('cors');
 const knex = require('./knex');
 const app = express();
-const taskData = require('./Data/tasks');
-const savedTasks = require('./Data/savedtasks');
 
 app.locals.title = "Bare Minimum API"
-app.locals.tasks = taskData
-app.locals.savedTasks = savedTasks
+
 
 app.set('port', process.env.PORT || 3001);
 
