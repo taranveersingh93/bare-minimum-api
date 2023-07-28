@@ -11,6 +11,13 @@ app.set('port', process.env.PORT || 3001);
 app.use(cors());
 app.use(express.json());
 
+app.get('/api/v1/smoketest', (request, response) => {
+  response.status(200).json({
+    smoke: "test"
+  })
+ })
+
+ 
 app.get('/api/v1/tasks', async (req, res) => {
   try {
     const tasks = await knex.from("allTasks").select();
