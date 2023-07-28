@@ -64,7 +64,6 @@ app.post('/api/v1/savedTasks', async (req, res) => {
       res.status(201).json(savedTasks)
     }
   } catch (error) {
-    console.log(error)
     res.status(500).json({message:error})
   }
 });
