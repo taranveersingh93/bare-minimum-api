@@ -3,11 +3,8 @@ const cors = require('cors');
 const knex = require('./knex');
 const app = express();
 
-app.locals.title = "Bare Minimum API"
-
-
+app.locals.title = "Bare Minimum API";
 app.set('port', process.env.PORT || 3001);
-
 app.use(cors());
 app.use(express.json());
 
@@ -71,7 +68,6 @@ app.post('/api/v1/savedTasks', async (req, res) => {
 app.patch('/api/v1/savedtasks/:id', async (req, res) => {
   const requestID = req.params.id;
   const completedStatus = req.body.completed;
-  console.log(completedStatus)
   const matchedTask = await knex("allTasks").select("saved").where({id:requestID});
 
   if (!matchedTask) {
@@ -97,7 +93,6 @@ app.delete('/api/v1/savedtasks/:id', async (req, res) => {
       res.status(404).json({message: 'This task is not saved to begin with'})
     }
   } catch (error) {
-    console.log(error)
     res.status(500).json({message: 'Oh no, something went wrong'})
   }
 });
